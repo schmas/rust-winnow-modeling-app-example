@@ -41,7 +41,9 @@ export const Stream = ({ className = '' }) => {
       return
     if (!videoRef.current) return
     if (!mediaStream) return
+    console.log('setting video ref')
     videoRef.current.srcObject = mediaStream
+    videoRef.current.play()
   }, [mediaStream, engineCommandManager])
 
   const handleMouseDown: MouseEventHandler<HTMLVideoElement> = ({
