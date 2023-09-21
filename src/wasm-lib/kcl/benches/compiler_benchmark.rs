@@ -1,11 +1,11 @@
 use criterion::{criterion_group, criterion_main, Criterion};
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    c.bench_function("parse + lex cube", |b| b.iter(|| lex_and_parse(CUBE_PROGRAM)));
-    c.bench_function("parse + lex big kitt", |b| {
+    c.bench_function("parse_lex_cube", |b| b.iter(|| lex_and_parse(CUBE_PROGRAM)));
+    c.bench_function("parse_lex_big kitt", |b| {
         b.iter(|| lex_and_parse(include_str!("../../tests/executor/inputs/kittycad_svg.kcl")))
     });
-    c.bench_function("parse + lex pipes_on_pipes", |b| {
+    c.bench_function("parse_lex_pipes_on_pipes", |b| {
         b.iter(|| lex_and_parse(include_str!("../../tests/executor/inputs/pipes_on_pipes.kcl")))
     });
 }

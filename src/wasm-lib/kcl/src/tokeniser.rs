@@ -162,62 +162,11 @@ lazy_static! {
     static ref BLOCKCOMMENT: Regex = Regex::new(r"^/\*[\s\S]*?\*/").unwrap();
 }
 
-fn is_number(character: &[u8]) -> bool {
-    NUMBER.is_match(character)
-}
-fn is_whitespace(character: &[u8]) -> bool {
-    WHITESPACE.is_match(character)
-}
-fn is_word(character: &[u8]) -> bool {
-    WORD.is_match(character)
-}
-fn is_keyword(character: &[u8]) -> bool {
-    KEYWORD.is_match(character)
-}
 fn is_string(character: &[u8]) -> bool {
     match STRING.find(character) {
         Some(m) => m.start() == 0,
         None => false,
     }
-}
-fn is_operator(character: &[u8]) -> bool {
-    OPERATOR.is_match(character)
-}
-fn is_block_start(character: &[u8]) -> bool {
-    BLOCK_START.is_match(character)
-}
-fn is_block_end(character: &[u8]) -> bool {
-    BLOCK_END.is_match(character)
-}
-fn is_paren_start(character: &[u8]) -> bool {
-    PARAN_START.is_match(character)
-}
-fn is_paren_end(character: &[u8]) -> bool {
-    PARAN_END.is_match(character)
-}
-fn is_array_start(character: &[u8]) -> bool {
-    ARRAY_START.is_match(character)
-}
-fn is_array_end(character: &[u8]) -> bool {
-    ARRAY_END.is_match(character)
-}
-fn is_comma(character: &[u8]) -> bool {
-    COMMA.is_match(character)
-}
-fn is_colon(character: &[u8]) -> bool {
-    COLON.is_match(character)
-}
-fn is_double_period(character: &[u8]) -> bool {
-    DOUBLE_PERIOD.is_match(character)
-}
-fn is_period(character: &[u8]) -> bool {
-    PERIOD.is_match(character)
-}
-fn is_line_comment(character: &[u8]) -> bool {
-    LINECOMMENT.is_match(character)
-}
-fn is_block_comment(character: &[u8]) -> bool {
-    BLOCKCOMMENT.is_match(character)
 }
 
 fn match_first(s: &[u8], regex: &Regex) -> Option<String> {
@@ -226,12 +175,12 @@ fn match_first(s: &[u8], regex: &Regex) -> Option<String> {
         .map(|the_match| String::from_utf8_lossy(the_match.as_bytes()).into())
 }
 
-fn make_token(token_type: TokenType, value: &str, start: usize) -> Token {
+fn make_token(token_type: TokenType, value: String, start: usize) -> Token {
     Token {
         token_type,
-        value: value.to_string(),
-        start,
         end: start + value.len(),
+        value,
+        start,
     }
 }
 
@@ -239,133 +188,60 @@ fn return_token_at_index(str_from_index: &[u8], start_index: usize) -> Option<To
     if is_string(str_from_index) {
         return Some(make_token(
             TokenType::String,
-            &match_first(str_from_index, &STRING)?,
+            match_first(str_from_index, &STRING)?,
             start_index,
         ));
     }
-    let is_line_comment_bool = is_line_comment(str_from_index);
-    if is_line_comment_bool || is_block_comment(str_from_index) {
-        return Some(make_token(
-            if is_line_comment_bool {
-                TokenType::LineComment
-            } else {
-                TokenType::BlockComment
-            },
-            &match_first(
-                str_from_index,
-                if is_line_comment_bool {
-                    &LINECOMMENT
-                } else {
-                    &BLOCKCOMMENT
-                },
-            )?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &LINECOMMENT) {
+        return Some(make_token(TokenType::LineComment, val, start_index));
     }
-    if is_paren_end(str_from_index) {
-        return Some(make_token(
-            TokenType::Brace,
-            &match_first(str_from_index, &PARAN_END)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &BLOCKCOMMENT) {
+        return Some(make_token(TokenType::BlockComment, val, start_index));
     }
-    if is_paren_start(str_from_index) {
-        return Some(make_token(
-            TokenType::Brace,
-            &match_first(str_from_index, &PARAN_START)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &PARAN_END) {
+        return Some(make_token(TokenType::Brace, val, start_index));
     }
-    if is_block_start(str_from_index) {
-        return Some(make_token(
-            TokenType::Brace,
-            &match_first(str_from_index, &BLOCK_START)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &PARAN_START) {
+        return Some(make_token(TokenType::Brace, val, start_index));
     }
-    if is_block_end(str_from_index) {
-        return Some(make_token(
-            TokenType::Brace,
-            &match_first(str_from_index, &BLOCK_END)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &BLOCK_START) {
+        return Some(make_token(TokenType::Brace, val, start_index));
     }
-    if is_array_start(str_from_index) {
-        return Some(make_token(
-            TokenType::Brace,
-            &match_first(str_from_index, &ARRAY_START)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &BLOCK_END) {
+        return Some(make_token(TokenType::Brace, val, start_index));
     }
-    if is_array_end(str_from_index) {
-        return Some(make_token(
-            TokenType::Brace,
-            &match_first(str_from_index, &ARRAY_END)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &ARRAY_START) {
+        return Some(make_token(TokenType::Brace, val, start_index));
     }
-    if is_comma(str_from_index) {
-        return Some(make_token(
-            TokenType::Comma,
-            &match_first(str_from_index, &COMMA)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &ARRAY_END) {
+        return Some(make_token(TokenType::Brace, val, start_index));
     }
-    if is_operator(str_from_index) {
-        return Some(make_token(
-            TokenType::Operator,
-            &match_first(str_from_index, &OPERATOR)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &COMMA) {
+        return Some(make_token(TokenType::Comma, val, start_index));
     }
-    if is_number(str_from_index) {
-        return Some(make_token(
-            TokenType::Number,
-            &match_first(str_from_index, &NUMBER)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &OPERATOR) {
+        return Some(make_token(TokenType::Operator, val, start_index));
     }
-    if is_keyword(str_from_index) {
-        return Some(make_token(
-            TokenType::Keyword,
-            &match_first(str_from_index, &KEYWORD)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &NUMBER) {
+        return Some(make_token(TokenType::Number, val, start_index));
     }
-    if is_word(str_from_index) {
-        return Some(make_token(
-            TokenType::Word,
-            &match_first(str_from_index, &WORD)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &KEYWORD) {
+        return Some(make_token(TokenType::Keyword, val, start_index));
     }
-    if is_colon(str_from_index) {
-        return Some(make_token(
-            TokenType::Colon,
-            &match_first(str_from_index, &COLON)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &WORD) {
+        return Some(make_token(TokenType::Word, val, start_index));
     }
-    if is_double_period(str_from_index) {
-        return Some(make_token(
-            TokenType::DoublePeriod,
-            &match_first(str_from_index, &DOUBLE_PERIOD)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &COLON) {
+        return Some(make_token(TokenType::Colon, val, start_index));
     }
-    if is_period(str_from_index) {
-        return Some(make_token(
-            TokenType::Period,
-            &match_first(str_from_index, &PERIOD)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &DOUBLE_PERIOD) {
+        return Some(make_token(TokenType::DoublePeriod, val, start_index));
     }
-    if is_whitespace(str_from_index) {
-        return Some(make_token(
-            TokenType::Whitespace,
-            &match_first(str_from_index, &WHITESPACE)?,
-            start_index,
-        ));
+    if let Some(val) = match_first(str_from_index, &PERIOD) {
+        return Some(make_token(TokenType::Period, val, start_index));
+    }
+    if let Some(val) = match_first(str_from_index, &WHITESPACE) {
+        return Some(make_token(TokenType::Whitespace, val, start_index));
     }
     None
 }
@@ -393,6 +269,47 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     use super::*;
+
+    fn is_paren_end(character: &[u8]) -> bool {
+        PARAN_END.is_match(character)
+    }
+
+    fn is_number(character: &[u8]) -> bool {
+        NUMBER.is_match(character)
+    }
+    fn is_whitespace(character: &[u8]) -> bool {
+        WHITESPACE.is_match(character)
+    }
+    fn is_word(character: &[u8]) -> bool {
+        WORD.is_match(character)
+    }
+    fn is_string(character: &[u8]) -> bool {
+        match STRING.find(character) {
+            Some(m) => m.start() == 0,
+            None => false,
+        }
+    }
+    fn is_operator(character: &[u8]) -> bool {
+        OPERATOR.is_match(character)
+    }
+    fn is_block_start(character: &[u8]) -> bool {
+        BLOCK_START.is_match(character)
+    }
+    fn is_block_end(character: &[u8]) -> bool {
+        BLOCK_END.is_match(character)
+    }
+    fn is_paren_start(character: &[u8]) -> bool {
+        PARAN_START.is_match(character)
+    }
+    fn is_comma(character: &[u8]) -> bool {
+        COMMA.is_match(character)
+    }
+    fn is_line_comment(character: &[u8]) -> bool {
+        LINECOMMENT.is_match(character)
+    }
+    fn is_block_comment(character: &[u8]) -> bool {
+        BLOCKCOMMENT.is_match(character)
+    }
 
     #[test]
     fn is_number_test() {
@@ -589,7 +506,7 @@ mod tests {
     #[test]
     fn make_token_test() {
         assert_eq!(
-            make_token(TokenType::Keyword, "const", 56),
+            make_token(TokenType::Keyword, "const".to_owned(), 56),
             Token {
                 token_type: TokenType::Keyword,
                 value: "const".to_string(),
