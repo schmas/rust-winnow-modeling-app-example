@@ -205,9 +205,12 @@ fn bool_value(i: TokenSlice) -> PResult<Identifier> {
 }
 
 pub fn literal(i: TokenSlice) -> PResult<Literal> {
-    alt((string_literal, unsigned_number_literal))
-        .context(expected("a KCL literal, like 'myPart' or 3"))
-        .parse_next(i)
+    dispatch! {peek(any);
+        t @ Token {..} if t.token_type == TokenType::String => string_literal,
+        _ => unsigned_number_literal,
+    }
+    .context(expected("a KCL literal, like 'myPart' or 3"))
+    .parse_next(i)
 }
 
 /// Parse a KCL string literal
@@ -843,18 +846,23 @@ fn unnecessarily_bracketed(i: TokenSlice) -> PResult<Value> {
 }
 
 fn value_allowed_in_pipe_expr(i: TokenSlice) -> PResult<Value> {
-    alt((
-        member_expression.map(Box::new).map(Value::MemberExpression),
-        bool_value.map(Box::new).map(Value::Identifier),
-        literal.map(Box::new).map(Value::Literal),
-        fn_call.map(Box::new).map(Value::CallExpression),
-        identifier.map(Box::new).map(Value::Identifier),
-        array.map(Box::new).map(Value::ArrayExpression),
-        object.map(Box::new).map(Value::ObjectExpression),
-        pipe_sub.map(Box::new).map(Value::PipeSubstitution),
+    dispatch! {peek(any);
+        t @ Token {..} if t.token_type == TokenType::Number => unsigned_number_literal.map(Box::new).map(Value::Literal),
+        t if t.token_type == TokenType::String => string_literal.map(Box::new).map(Value::Literal),
+        t if t.value == "[" => array.map(Box::new).map(Value::ArrayExpression),
+        t if t.value == "{" => object.map(Box::new).map(Value::ObjectExpression),
+        t if t.value == "%" => pipe_sub.map(Box::new).map(Value::PipeSubstitution),
+        t if t.value == "(" => alt((
         function_expression.map(Box::new).map(Value::FunctionExpression),
         unnecessarily_bracketed,
-    ))
+        )),
+        t if t.value == "true" || t.value == "false" => bool_value.map(Box::new).map(Value::Identifier),
+        _ => alt((
+            member_expression.map(Box::new).map(Value::MemberExpression),
+            fn_call.map(Box::new).map(Value::CallExpression),
+            identifier.map(Box::new).map(Value::Identifier),
+        )),
+    }
     .context(expected("a KCL value (but not a pipe expression)"))
     .parse_next(i)
 }
@@ -964,10 +972,7 @@ impl TryFrom<Token> for Identifier {
         } else {
             Err(KclError::Syntax(KclErrorDetails {
                 source_ranges: token.as_source_ranges(),
-                message: format!(
-                    "Cannot assign a variable to a reserved keyword: {}",
-                    token.value.as_str()
-                ),
+                message: format!("Not a valid identifier: {}", token.value.as_str()),
             }))
         }
     }
@@ -1322,10 +1327,10 @@ mod tests {
 
     #[test]
     fn weird_program_just_a_pipe() {
-        let tokens = crate::token::lexer("|");
+        let tokens = dbg!(crate::token::lexer("|"));
         let err: KclError = program.parse(&tokens).unwrap_err().into();
         assert_eq!(err.source_ranges(), vec![SourceRange([0, 1])]);
-        assert_eq!(err.message(), "Unexpected token");
+        assert_eq!(err.message(), "Not a valid identifier: |");
     }
 
     #[test]
