@@ -10,10 +10,10 @@ use winnow::{
 use crate::{
     ast::types::{
         ArrayExpression, BinaryExpression, BinaryOperator, BinaryPart, BodyItem, CallExpression, CommentStyle,
-        ExpressionStatement, FunctionExpression, Identifier, Literal, LiteralIdentifier, MemberExpression,
-        MemberObject, NonCodeMeta, NonCodeNode, NonCodeValue, ObjectExpression, ObjectProperty, PipeExpression,
-        PipeSubstitution, Program, ReturnStatement, UnaryExpression, UnaryOperator, Value, VariableDeclaration,
-        VariableDeclarator, VariableKind,
+        ExpressionStatement, FunctionExpression, Identifier, Literal, LiteralIdentifier, LiteralValue,
+        MemberExpression, MemberObject, NonCodeMeta, NonCodeNode, NonCodeValue, ObjectExpression, ObjectProperty,
+        PipeExpression, PipeSubstitution, Program, ReturnStatement, UnaryExpression, UnaryOperator, Value,
+        VariableDeclaration, VariableDeclarator, VariableKind,
     },
     errors::{KclError, KclErrorDetails},
     executor::SourceRange,
@@ -25,7 +25,7 @@ use crate::{
 
 mod error;
 
-type PResult<O, E = error::ContextError> = winnow::prelude::PResult<O, E>;
+type PResult<O, E = ContextError> = winnow::prelude::PResult<O, E>;
 
 lazy_static::lazy_static! {
     static ref STDLIB: StdLib = StdLib::new();
@@ -216,7 +216,7 @@ pub fn string_literal(i: TokenSlice) -> PResult<Literal> {
         .try_map(|token: Token| match token.token_type {
             TokenType::String => {
                 let s = token.value[1..token.value.len() - 1].to_string();
-                Ok((JValue::String(s), token))
+                Ok((LiteralValue::String(s), token))
             }
             _ => Err(KclError::Syntax(KclErrorDetails {
                 source_ranges: token.as_source_ranges(),
@@ -239,7 +239,7 @@ fn unsigned_number_literal(i: TokenSlice) -> PResult<Literal> {
         .try_map(|token: Token| match token.token_type {
             TokenType::Number => {
                 if let Ok(x) = token.value.parse::<i64>() {
-                    return Ok((JValue::Number(JNumber::from(x)), token));
+                    return Ok((JNumber::from(x), token));
                 }
                 let x: f64 = token.value.parse().map_err(|_| {
                     KclError::Syntax(KclErrorDetails {
@@ -249,7 +249,7 @@ fn unsigned_number_literal(i: TokenSlice) -> PResult<Literal> {
                 })?;
 
                 match JNumber::from_f64(x) {
-                    Some(n) => Ok((JValue::Number(n), token)),
+                    Some(n) => Ok((n, token)),
                     None => Err(KclError::Syntax(KclErrorDetails {
                         source_ranges: token.as_source_ranges(),
                         message: format!("Invalid float: {}", token.value),
@@ -266,7 +266,7 @@ fn unsigned_number_literal(i: TokenSlice) -> PResult<Literal> {
     Ok(Literal {
         start: token.start,
         end: token.end,
-        value,
+        value: LiteralValue::Number(value),
         raw: token.value.clone(),
     })
 }
@@ -407,7 +407,7 @@ fn integer_range(i: TokenSlice) -> PResult<Vec<Value>> {
             Value::Literal(Box::new(Literal {
                 start: token0.start,
                 end: token0.end,
-                value: JValue::Number(num.into()),
+                value: num.into(),
                 raw: num.to_string(),
             }))
         })
@@ -1408,7 +1408,7 @@ const mySk1 = startSketchAt([0, 0])"#;
         let tokens = crate::token::lexer(r#"const x = y() |> /*hi*/ z(%)"#);
         let mut body = program.parse(&tokens).unwrap().body;
         let BodyItem::VariableDeclaration(mut item) = body.remove(0) else {
-            panic!("expected vardec");
+            panic!("expected variable declaration");
         };
         let val = item.declarations.remove(0).init;
         let Value::PipeExpression(pipe) = val else {
@@ -1461,7 +1461,7 @@ const mySk1 = startSketchAt([0, 0])"#;
                         argument: Value::Literal(Box::new(Literal {
                             start: 32,
                             end: 33,
-                            value: JValue::Number(JNumber::from(2)),
+                            value: 2.into(),
                             raw: "2".to_owned(),
                         })),
                     })],
@@ -1616,7 +1616,7 @@ const mySk1 = startSketchAt([0, 0])"#;
             BinaryPart::Literal(Box::new(Literal {
                 start: 9,
                 end: 10,
-                value: JValue::Number(JNumber::from(3)),
+                value: 3.into(),
                 raw: "3".to_owned(),
             }))
         );

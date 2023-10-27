@@ -1,12 +1,15 @@
 //! Data types for the AST.
 
-use std::{collections::HashMap, fmt::Write};
+use std::{
+    collections::HashMap,
+    fmt::{Formatter, Write},
+};
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use parse_display::{Display, FromStr};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_json::Map;
+use serde_json::{Map, Number as JNumber, Value as JValue};
 use tower_lsp::lsp_types::{CompletionItem, CompletionItemKind, DocumentSymbol, Range as LspRange, SymbolKind};
 
 use crate::{
@@ -1312,8 +1315,68 @@ impl VariableDeclarator {
 pub struct Literal {
     pub start: usize,
     pub end: usize,
-    pub value: serde_json::Value,
+    pub value: LiteralValue,
     pub raw: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, ts_rs::TS, JsonSchema)]
+#[ts(export)]
+#[serde(tag = "type")]
+pub enum LiteralValue {
+    // TODO: Use Cow<str> here so that static strings don't require alloc
+    String(String),
+    Number(JNumber),
+}
+
+impl std::fmt::Display for LiteralValue {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        JValue::from(self.to_owned()).fmt(f)
+    }
+}
+
+impl From<LiteralValue> for JValue {
+    fn from(value: LiteralValue) -> Self {
+        match value {
+            LiteralValue::String(x) => JValue::String(x),
+            LiteralValue::Number(x) => JValue::Number(x),
+        }
+    }
+}
+
+impl From<&'static str> for LiteralValue {
+    fn from(value: &'static str) -> Self {
+        Self::String(value.to_owned())
+    }
+}
+impl From<String> for LiteralValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+impl From<JNumber> for LiteralValue {
+    fn from(value: JNumber) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl From<u64> for LiteralValue {
+    fn from(value: u64) -> Self {
+        Self::Number(value.into())
+    }
+}
+
+impl From<i64> for LiteralValue {
+    fn from(value: i64) -> Self {
+        Self::Number(value.into())
+    }
+}
+
+impl From<f64> for LiteralValue {
+    fn from(value: f64) -> Self {
+        JNumber::from_f64(value)
+            .map(Self::Number)
+            .expect("Cannot use NaN or Inf here. TODO stop using json numbers here")
+    }
 }
 
 impl_value_meta!(Literal);
@@ -1325,7 +1388,7 @@ impl From<Literal> for Value {
 }
 
 impl Literal {
-    pub fn new(value: serde_json::Value) -> Self {
+    pub fn new(value: LiteralValue) -> Self {
         Self {
             start: 0,
             end: 0,
@@ -1343,7 +1406,7 @@ impl Literal {
     }
 
     fn recast(&self) -> String {
-        if let serde_json::Value::String(value) = &self.value {
+        if let JValue::String(value) = &self.value {
             let quote = if self.raw.trim().starts_with('"') { '"' } else { '\'' };
             format!("{}{}{}", quote, value, quote)
         } else {
@@ -1355,7 +1418,7 @@ impl Literal {
 impl From<Literal> for MemoryItem {
     fn from(literal: Literal) -> Self {
         MemoryItem::UserVal(UserVal {
-            value: literal.value.clone(),
+            value: literal.value.into(),
             meta: vec![Metadata {
                 source_range: literal.into(),
             }],
@@ -1366,7 +1429,7 @@ impl From<Literal> for MemoryItem {
 impl From<&Box<Literal>> for MemoryItem {
     fn from(literal: &Box<Literal>) -> Self {
         MemoryItem::UserVal(UserVal {
-            value: literal.value.clone(),
+            value: literal.value.into(),
             meta: vec![Metadata {
                 source_range: literal.into(),
             }],
@@ -1940,10 +2003,10 @@ impl MemberExpression {
 
         let array_json = array.get_json_value()?;
 
-        if let serde_json::Value::Array(array) = array_json {
+        if let JValue::Array(array) = array_json {
             if let Some(value) = array.get(index) {
                 Ok(MemoryItem::UserVal(UserVal {
-                    value: value.clone(),
+                    value: value.into(),
                     meta: vec![Metadata {
                         source_range: self.into(),
                     }],
@@ -1966,11 +2029,11 @@ impl MemberExpression {
         let property_name = match &self.property {
             LiteralIdentifier::Identifier(identifier) => identifier.name.to_string(),
             LiteralIdentifier::Literal(literal) => {
-                let value = literal.value.clone();
+                let value = literal.value.into();
                 // Parse this as a string.
-                if let serde_json::Value::String(string) = value {
+                if let JValue::String(string) = value {
                     string
-                } else if let serde_json::Value::Number(_) = &value {
+                } else if let JValue::Number(_) = &value {
                     // It can also be a number if we are getting a member of an array.
                     return self.get_result_array(memory, parse_json_number_as_usize(&value, self.into())?);
                 } else {
@@ -1992,10 +2055,10 @@ impl MemberExpression {
 
         let object_json = object.get_json_value()?;
 
-        if let serde_json::Value::Object(map) = object_json {
+        if let JValue::Object(map) = object_json {
             if let Some(value) = map.get(&property_name) {
                 Ok(MemoryItem::UserVal(UserVal {
-                    value: value.clone(),
+                    value: value.into(),
                     meta: vec![Metadata {
                         source_range: self.into(),
                     }],
@@ -2156,7 +2219,7 @@ impl BinaryExpression {
                 parse_json_value_as_string(&left_json_value),
                 parse_json_value_as_string(&right_json_value),
             ) {
-                let value = serde_json::Value::String(format!("{}{}", left, right));
+                let value = JValue::String(format!("{}{}", left, right)).into();
                 return Ok(MemoryItem::UserVal(UserVal {
                     value,
                     meta: vec![Metadata {
@@ -2169,7 +2232,7 @@ impl BinaryExpression {
         let left = parse_json_number_as_f64(&left_json_value, self.left.clone().into())?;
         let right = parse_json_number_as_f64(&right_json_value, self.right.clone().into())?;
 
-        let value: serde_json::Value = match self.operator {
+        let value: JNumber = match self.operator {
             BinaryOperator::Add => (left + right).into(),
             BinaryOperator::Sub => (left - right).into(),
             BinaryOperator::Mul => (left * right).into(),
@@ -2178,7 +2241,7 @@ impl BinaryExpression {
         };
 
         Ok(MemoryItem::UserVal(UserVal {
-            value,
+            value: value.into(),
             meta: vec![Metadata {
                 source_range: self.into(),
             }],
@@ -2192,8 +2255,8 @@ impl BinaryExpression {
     }
 }
 
-pub fn parse_json_number_as_f64(j: &serde_json::Value, source_range: SourceRange) -> Result<f64, KclError> {
-    if let serde_json::Value::Number(n) = &j {
+pub fn parse_json_number_as_f64(j: &JValue, source_range: SourceRange) -> Result<f64, KclError> {
+    if let JValue::Number(n) = &j {
         n.as_f64().ok_or_else(|| {
             KclError::Syntax(KclErrorDetails {
                 source_ranges: vec![source_range],
@@ -2208,8 +2271,8 @@ pub fn parse_json_number_as_f64(j: &serde_json::Value, source_range: SourceRange
     }
 }
 
-pub fn parse_json_number_as_usize(j: &serde_json::Value, source_range: SourceRange) -> Result<usize, KclError> {
-    if let serde_json::Value::Number(n) = &j {
+pub fn parse_json_number_as_usize(j: &JValue, source_range: SourceRange) -> Result<usize, KclError> {
+    if let JValue::Number(n) = &j {
         Ok(n.as_i64().ok_or_else(|| {
             KclError::Syntax(KclErrorDetails {
                 source_ranges: vec![source_range],
@@ -2224,8 +2287,8 @@ pub fn parse_json_number_as_usize(j: &serde_json::Value, source_range: SourceRan
     }
 }
 
-pub fn parse_json_value_as_string(j: &serde_json::Value) -> Option<String> {
-    if let serde_json::Value::String(n) = &j {
+pub fn parse_json_value_as_string(j: &JValue) -> Option<String> {
+    if let JValue::String(n) = &j {
         Some(n.clone())
     } else {
         None

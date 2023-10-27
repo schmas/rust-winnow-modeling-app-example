@@ -246,7 +246,7 @@ impl Parser {
         Ok(Literal {
             start: token.start,
             end: token.end,
-            value,
+            value: value.into(),
             raw: token.value.clone(),
         })
     }
@@ -1833,7 +1833,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     use super::*;
-    use crate::ast::types::BinaryOperator;
+    use crate::ast::types::{BinaryOperator, LiteralValue};
 
     #[test]
     fn test_make_identifier() {
@@ -1986,7 +1986,7 @@ const key = 'c'"#,
             Literal {
                 start: 4,
                 end: 5,
-                value: serde_json::Value::Number(5.into()),
+                value: LiteralValue::Number(5.into()),
                 raw: "5".to_string()
             },
             literal
@@ -1996,7 +1996,7 @@ const key = 'c'"#,
             Literal {
                 start: 7,
                 end: 14,
-                value: serde_json::Value::String("hello".to_string()),
+                value: "hello".into(),
                 raw: "\"hello\"".to_string()
             },
             literal
@@ -2014,13 +2014,13 @@ const key = 'c'"#,
             left: BinaryPart::Literal(Box::new(Literal {
                 start: 0,
                 end: 1,
-                value: serde_json::Value::Number(serde_json::Number::from(5)),
+                value: 5.into(),
                 raw: "5".to_owned(),
             })),
             right: BinaryPart::Literal(Box::new(Literal {
                 start: 4,
                 end: 7,
-                value: serde_json::Value::String("a".to_owned()),
+                value: "a".into(),
                 raw: r#""a""#.to_owned(),
             })),
         };
@@ -2690,14 +2690,14 @@ show(mySk1)"#;
                     left: BinaryPart::Literal(Box::new(Literal {
                         start: 0,
                         end: 1,
-                        value: serde_json::Value::Number(serde_json::Number::from(5)),
+                        value: 5.into(),
                         raw: "5".to_string(),
                     })),
                     operator: BinaryOperator::Add,
                     right: BinaryPart::Literal(Box::new(Literal {
                         start: 3,
                         end: 4,
-                        value: serde_json::Value::Number(serde_json::Number::from(6)),
+                        value: 6.into(),
                         raw: "6".to_string(),
                     })),
                 })),

@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use tower_lsp::lsp_types::{Position as LspPosition, Range as LspRange};
 
 use crate::{
-    ast::types::{BodyItem, Function, FunctionExpression, Value},
+    ast::types::{BodyItem, Function, FunctionExpression, LiteralValue, Value},
     engine::{EngineConnection, EngineManager},
     errors::{KclError, KclErrorDetails},
 };
@@ -282,7 +282,7 @@ impl DefaultPlanes {
 #[ts(export)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub struct UserVal {
-    pub value: serde_json::Value,
+    pub value: LiteralValue,
     #[serde(rename = "__meta")]
     pub meta: Vec<Metadata>,
 }
@@ -336,7 +336,7 @@ impl From<MemoryItem> for Vec<SourceRange> {
 impl MemoryItem {
     pub fn get_json_value(&self) -> Result<serde_json::Value, KclError> {
         if let MemoryItem::UserVal(user_val) = self {
-            Ok(user_val.value.clone())
+            Ok(user_val.value.into())
         } else {
             serde_json::to_value(self).map_err(|err| {
                 KclError::Semantic(KclErrorDetails {

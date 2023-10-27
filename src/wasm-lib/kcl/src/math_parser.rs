@@ -575,7 +575,7 @@ impl ReversePolishNotation {
             ),
             MathExpression::ExtendedLiteral(lit) => (
                 BinaryPart::Literal(Box::new(Literal {
-                    value: lit.value.clone(),
+                    value: lit.value.into(),
                     start: lit.start,
                     end: lit.end,
                     raw: lit.raw.clone(),
@@ -613,7 +613,7 @@ impl ReversePolishNotation {
             ),
             MathExpression::ExtendedLiteral(lit) => (
                 BinaryPart::Literal(Box::new(Literal {
-                    value: lit.value.clone(),
+                    value: lit.value.into(),
                     start: lit.start,
                     end: lit.end,
                     raw: lit.raw.clone(),
@@ -714,13 +714,13 @@ mod test {
                 start: 0,
                 end: 5,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
                 })),
                 right: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(2)),
+                    value: 2.into(),
                     raw: "2".to_string(),
                     start: 4,
                     end: 5,
@@ -741,13 +741,13 @@ mod test {
                 start: 0,
                 end: 3,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
                 })),
                 right: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(2)),
+                    value: 2.into(),
                     raw: "2".to_string(),
                     start: 2,
                     end: 3,
@@ -768,13 +768,13 @@ mod test {
                 start: 0,
                 end: 4,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
                 })),
                 right: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(2)),
+                    value: 2.into(),
                     raw: "2".to_string(),
                     start: 3,
                     end: 4,
@@ -795,7 +795,7 @@ mod test {
                 start: 0,
                 end: 9,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
@@ -805,13 +805,13 @@ mod test {
                     start: 4,
                     end: 9,
                     left: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(2)),
+                        value: 2.into(),
                         raw: "2".to_string(),
                         start: 4,
                         end: 5,
                     })),
                     right: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(3)),
+                        value: 3.into(),
                         raw: "3".to_string(),
                         start: 8,
                         end: 9,
@@ -833,7 +833,7 @@ mod test {
                 start: 0,
                 end: 13,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
@@ -843,13 +843,13 @@ mod test {
                     start: 6,
                     end: 11,
                     left: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(2)),
+                        value: 2.into(),
                         raw: "2".to_string(),
                         start: 6,
                         end: 7,
                     })),
                     right: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(3)),
+                        value: 3.into(),
                         raw: "3".to_string(),
                         start: 10,
                         end: 11,
@@ -875,7 +875,7 @@ mod test {
                     start: 0,
                     end: 13,
                     left: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(1)),
+                        value: 1.into(),
                         raw: "1".to_string(),
                         start: 0,
                         end: 1,
@@ -885,13 +885,13 @@ mod test {
                         start: 6,
                         end: 11,
                         left: BinaryPart::Literal(Box::new(Literal {
-                            value: serde_json::Value::Number(serde_json::Number::from(2)),
+                            value: 2.into(),
                             raw: "2".to_string(),
                             start: 6,
                             end: 7,
                         })),
                         right: BinaryPart::Literal(Box::new(Literal {
-                            value: serde_json::Value::Number(serde_json::Number::from(3)),
+                            value: 3.into(),
                             raw: "3".to_string(),
                             start: 10,
                             end: 11,
@@ -899,7 +899,7 @@ mod test {
                     })),
                 })),
                 right: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(4)),
+                    value: 4.into(),
                     raw: "4".to_string(),
                     start: 16,
                     end: 17,
@@ -920,7 +920,7 @@ mod test {
                 start: 0,
                 end: 17,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
@@ -934,20 +934,20 @@ mod test {
                         start: 6,
                         end: 11,
                         left: BinaryPart::Literal(Box::new(Literal {
-                            value: serde_json::Value::Number(serde_json::Number::from(2)),
+                            value: 2.into(),
                             raw: "2".to_string(),
                             start: 6,
                             end: 7,
                         })),
                         right: BinaryPart::Literal(Box::new(Literal {
-                            value: serde_json::Value::Number(serde_json::Number::from(3)),
+                            value: 3.into(),
                             raw: "3".to_string(),
                             start: 10,
                             end: 11,
                         })),
                     })),
                     right: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(4)),
+                        value: 4.into(),
                         raw: "4".to_string(),
                         start: 16,
                         end: 17,
@@ -968,7 +968,7 @@ mod test {
                 start: 0,
                 end: 24,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
@@ -986,27 +986,27 @@ mod test {
                             start: 7,
                             end: 12,
                             left: BinaryPart::Literal(Box::new(Literal {
-                                value: serde_json::Value::Number(serde_json::Number::from(2)),
+                                value: 2.into(),
                                 raw: "2".to_string(),
                                 start: 7,
                                 end: 8,
                             })),
                             right: BinaryPart::Literal(Box::new(Literal {
-                                value: serde_json::Value::Number(serde_json::Number::from(3)),
+                                value: 3.into(),
                                 raw: "3".to_string(),
                                 start: 11,
                                 end: 12,
                             })),
                         })),
                         right: BinaryPart::Literal(Box::new(Literal {
-                            value: serde_json::Value::Number(serde_json::Number::from(4)),
+                            value: 4.into(),
                             raw: "4".to_string(),
                             start: 17,
                             end: 18,
                         })),
                     })),
                     right: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(5)),
+                        value: 5.into(),
                         raw: "5".to_string(),
                         start: 21,
                         end: 22,
@@ -1027,7 +1027,7 @@ mod test {
                 start: 0,
                 end: 17,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(1)),
+                    value: 1.into(),
                     raw: "1".to_string(),
                     start: 0,
                     end: 1,
@@ -1037,13 +1037,13 @@ mod test {
                     start: 8,
                     end: 13,
                     left: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(2)),
+                        value: 2.into(),
                         raw: "2".to_string(),
                         start: 8,
                         end: 9,
                     })),
                     right: BinaryPart::Literal(Box::new(Literal {
-                        value: serde_json::Value::Number(serde_json::Number::from(3)),
+                        value: 3.into(),
                         raw: "3".to_string(),
                         start: 12,
                         end: 13,
@@ -1189,13 +1189,13 @@ mod test {
                 start: 0,
                 end: code.find(")))").unwrap() + 3,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(2)),
+                    value: 2.into(),
                     raw: "2".to_string(),
                     start: 0,
                     end: 1,
                 })),
                 right: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(3)),
+                    value: 3.into(),
                     raw: "3".to_string(),
                     start: 7,
                     end: 8,
@@ -1243,7 +1243,7 @@ mod test {
             start: 0,
             end: 9,
             left: BinaryPart::Literal(Box::new(Literal {
-                value: serde_json::Value::Number(serde_json::Number::from(1)),
+                value: 1.into(),
                 raw: "1".to_string(),
                 start: 0,
                 end: 1,
@@ -1253,13 +1253,13 @@ mod test {
                 start: 4,
                 end: 9,
                 left: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(2)),
+                    value: 2.into(),
                     raw: "2".to_string(),
                     start: 4,
                     end: 5,
                 })),
                 right: BinaryPart::Literal(Box::new(Literal {
-                    value: serde_json::Value::Number(serde_json::Number::from(3)),
+                    value: 3.into(),
                     raw: "3".to_string(),
                     start: 8,
                     end: 9,
