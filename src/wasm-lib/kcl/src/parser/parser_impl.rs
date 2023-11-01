@@ -2216,7 +2216,7 @@ const secondExtrude = startSketchOn('XY')
         let err = parser.ast().unwrap_err();
         // TODO: Better errors when program cannot tokenize.
         // https://github.com/KittyCAD/modeling-app/issues/696
-        assert!(err.to_string().contains("found list of unknown tokens"));
+        assert!(err.to_string().contains("found unknown token"));
     }
 
     #[test]
@@ -2276,7 +2276,7 @@ z(-[["#,
         // https://github.com/KittyCAD/modeling-app/issues/696
         assert_eq!(
             result.err().unwrap().to_string(),
-            r##"lexical: KclErrorDetails { source_ranges: [SourceRange([6, 7])], message: "found list of unknown tokens \"#\"" }"##
+            r##"lexical: KclErrorDetails { source_ranges: [SourceRange([6, 7])], message: "found unknown token '#'" }"##
         );
     }
 
@@ -2290,7 +2290,7 @@ z(-[["#,
         // https://github.com/KittyCAD/modeling-app/issues/696
         assert_eq!(
             result.err().unwrap().to_string(),
-            r##"lexical: KclErrorDetails { source_ranges: [SourceRange([25, 26]), SourceRange([26, 27])], message: "found list of unknown tokens \"# #\"" }"##
+            r##"lexical: KclErrorDetails { source_ranges: [SourceRange([25, 26]), SourceRange([26, 27])], message: "found unknown tokens [#, #]" }"##
         );
     }
 
