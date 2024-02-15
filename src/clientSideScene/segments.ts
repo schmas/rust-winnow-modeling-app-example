@@ -47,8 +47,10 @@ export function straightSegment({
   const group = new Group()
 
   const shape = new Shape()
-  shape.moveTo(0, -0.08 * scale)
-  shape.lineTo(0, 0.08 * scale) // The width of the line
+  shape.moveTo(-0.08, -0.08 * scale)
+  shape.lineTo(-0.08, 0.08 * scale)
+  shape.lineTo(0.08, 0.08 * scale)
+  shape.lineTo(0.08, -0.08 * scale)
 
   let geometry
   if (isDraftSegment) {
@@ -223,8 +225,10 @@ export function createArcGeometry({
     0
   )
   const shape = new Shape()
-  shape.moveTo(0, -0.08 * scale)
-  shape.lineTo(0, 0.08 * scale) // The width of the line
+  shape.moveTo(-0.08, -0.08 * scale)
+  shape.lineTo(-0.08, 0.08 * scale)
+  shape.lineTo(0.08, 0.08 * scale)
+  shape.lineTo(0.08, -0.08 * scale)
 
   if (!isDashed) {
     const points = arcStart.getPoints(50)

@@ -85,6 +85,8 @@ export const TANGENTIAL_ARC_TO_SEGMENT = 'tangential-arc-to-segment'
 export const TANGENTIAL_ARC_TO_SEGMENT_BODY = 'tangential-arc-to-segment-body'
 export const TANGENTIAL_ARC_TO__SEGMENT_DASH =
   'tangential-arc-to-segment-body-dashed'
+const EXTRUDE_UI_BOTTOM = 'extrude-ui-bottom'
+const EXTRUDE_UI_TOP = 'extrude-ui-top'
 
 // This singleton Class is responsible for all of the things the user sees and interacts with.
 // That mostly mean sketch elements.
@@ -228,14 +230,147 @@ class SceneEntities {
     if (intersectionPlane) this.scene.remove(intersectionPlane)
   }
 
+  setupEditExtrude({ sketchPathToNode }: { sketchPathToNode: PathToNode }) {
+    console.log('started')
+    this.createIntersectionPlane()
+
+    const sketchGroup = sketchGroupFromPathToNode({
+      pathToNode: sketchPathToNode,
+      ast: kclManager.ast,
+      programMemory: kclManager.programMemory,
+    })
+    this.currentSketchQuaternion = quaternionFromSketchGroup(sketchGroup)
+    if (!Array.isArray(sketchGroup?.value)) return
+    this.sceneProgramMemory = kclManager.programMemory
+    const yo = (name: string) => {
+      const group = new Group()
+      group.userData = {
+        type: name,
+        pathToNode: sketchPathToNode,
+      }
+      const dummy = new Mesh()
+      dummy.position.set(
+        sketchGroup.position[0],
+        sketchGroup.position[1],
+        sketchGroup.position[2]
+      )
+      const orthoFactor = orthoScale(sceneInfra.camera)
+      const factor =
+        sceneInfra.camera instanceof OrthographicCamera
+          ? orthoFactor
+          : perspScale(sceneInfra.camera, dummy)
+      sketchGroup.value.forEach((segment, index) => {
+        let segPathToNode = getNodePathFromSourceRange(
+          kclManager.ast,
+          segment.__geoMeta.sourceRange
+        )
+        const isDraftSegment = false
+        let seg
+        if (segment.type === 'TangentialArcTo') {
+          seg = tangentialArcToSegment({
+            prevSegment: sketchGroup.value[index - 1],
+            from: segment.from,
+            to: segment.to,
+            id: segment.__geoMeta.id,
+            pathToNode: segPathToNode,
+            isDraftSegment,
+            scale: factor,
+          })
+        } else {
+          seg = straightSegment({
+            from: segment.from,
+            to: segment.to,
+            id: segment.__geoMeta.id,
+            pathToNode: segPathToNode,
+            isDraftSegment,
+            scale: factor,
+          })
+        }
+        seg.layers.set(SKETCH_LAYER)
+        seg.traverse((child) => {
+          child.layers.set(SKETCH_LAYER)
+        })
+
+        group.add(seg)
+        this.activeSegments[JSON.stringify(segPathToNode)] = seg
+      })
+      return group
+    }
+    const group1 = yo(EXTRUDE_UI_BOTTOM)
+    const group2 = yo(EXTRUDE_UI_TOP)
+    group1.children.forEach((child) => {
+      const arrow = child.getObjectByName(ARROWHEAD)
+      if (arrow) {
+        arrow.removeFromParent()
+      }
+    })
+    group2.children.forEach((child) => {
+      const arrow = child.getObjectByName(ARROWHEAD)
+      if (arrow) {
+        arrow.removeFromParent()
+      }
+    })
+    group1.position.set(0, 0, 5)
+
+    const specialSeg = straightSegment({
+      from: [0, 0],
+      to: [0, 5],
+      id: 'specail',
+      pathToNode: [],
+      isDraftSegment: false,
+      scale: 1,
+    })
+    specialSeg.name = 'special-seg'
+    specialSeg.userData.type = 'special-seg'
+    specialSeg.layers.set(SKETCH_LAYER)
+    specialSeg.traverse((child) => {
+      child.layers.set(SKETCH_LAYER)
+    })
+    specialSeg.position.set(
+      sketchGroup.value[0].from[0],
+      sketchGroup.value[0].from[1],
+      0
+    )
+    specialSeg.setRotationFromQuaternion(this.currentSketchQuaternion)
+    specialSeg.rotateOnAxis(new Vector3(1, 0, 0), Math.PI / 2)
+    if (this.intersectionPlane) {
+      this.intersectionPlane.position.set(
+        sketchGroup.value[0].from[0],
+        sketchGroup.value[0].from[1],
+        0
+      )
+      this.intersectionPlane.setRotationFromQuaternion(
+        this.currentSketchQuaternion
+      )
+      this.intersectionPlane.setRotationFromAxisAngle(
+        new Vector3(1, 0, 0),
+        Math.PI / 2
+      )
+    }
+    console.log(group1, group2)
+    this.scene.add(group1, group2, specialSeg)
+    sceneInfra.setCallbacks({
+      onDrag: (arg) => {
+        const parent = getParentGroup(arg.object, ['special-seg'])
+        if (!parent || parent.name !== 'special-seg') return
+        const height = arg?.intersection2d?.y
+        group1.position.set(0, 0, height)
+        this.updateStraightSegment({
+          from: [0, 0],
+          to: [0, height],
+          group: specialSeg,
+          scale: 1,
+        })
+        sceneInfra.modelingSend({ type: 'set extrude distance', data: height })
+      },
+    })
+  }
   async setupSketch({
     sketchPathToNode,
-    ast,
     // is draft line assumes the last segment is a draft line, and mods it as the user moves the mouse
     draftSegment,
   }: {
     sketchPathToNode: PathToNode
-    ast?: Program
     draftSegment?: DraftSegment
   }) {
     sceneInfra.resetMouseListeners()
@@ -684,8 +819,11 @@ class SceneEntities {
     group.userData.from = from
     group.userData.to = to
     const shape = new Shape()
-    shape.moveTo(0, -0.08 * scale)
-    shape.lineTo(0, 0.08 * scale) // The width of the line
+    shape.moveTo(-0.08, -0.08 * scale)
+    shape.lineTo(-0.08, 0.08 * scale)
+    shape.lineTo(0.08, 0.08 * scale)
+    shape.lineTo(0.08, -0.08 * scale)
+
     const arrowGroup = group.children.find(
       (child) => child.userData.type === ARROWHEAD
     ) as Group

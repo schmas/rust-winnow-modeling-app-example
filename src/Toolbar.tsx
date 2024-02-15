@@ -184,28 +184,66 @@ export const Toolbar = () => {
               </li>
             ))}
         {state.matches('idle') && (
+          <>
+            <li className="contents">
+              <ActionButton
+                Element="button"
+                className="text-sm"
+                onClick={() =>
+                  commandBarSend({
+                    type: 'Find and select command',
+                    data: { name: 'Extrude', ownerMachine: 'modeling' },
+                  })
+                }
+                disabled={!state.can('Extrude')}
+                title={
+                  state.can('Extrude')
+                    ? 'extrude'
+                    : 'sketches need to be closed, or not already extruded'
+                }
+                icon={{
+                  icon: 'extrude',
+                  bgClassName,
+                }}
+              >
+                Extrude
+              </ActionButton>
+            </li>
+            <li className="contents">
+              <ActionButton
+                Element="button"
+                className="text-sm"
+                onClick={() => send('Extrude 2')}
+                disabled={!state.can('Extrude 2')}
+                title={
+                  state.can('Extrude 2')
+                    ? 'extrude'
+                    : 'sketches need to be closed, or not already extruded'
+                }
+                icon={{
+                  icon: 'extrude',
+                  bgClassName,
+                }}
+              >
+                Extrude 2
+              </ActionButton>
+            </li>
+          </>
+        )}
+        {state.matches('Editing Extrude') && (
           <li className="contents">
             <ActionButton
               Element="button"
               className="text-sm"
-              onClick={() =>
-                commandBarSend({
-                  type: 'Find and select command',
-                  data: { name: 'Extrude', ownerMachine: 'modeling' },
-                })
-              }
+              onClick={() => send('Extrude')}
               disabled={!state.can('Extrude')}
-              title={
-                state.can('Extrude')
-                  ? 'extrude'
-                  : 'sketches need to be closed, or not already extruded'
-              }
+              title={'finish extrude'}
               icon={{
                 icon: 'extrude',
                 bgClassName,
               }}
             >
-              Extrude
+              Finish Extrude
             </ActionButton>
           </li>
         )}
