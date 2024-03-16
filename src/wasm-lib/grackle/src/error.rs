@@ -61,7 +61,7 @@ pub enum Error {
     #[error("Failed on instruction {instruction_index}:\n{error}\n\nInstruction contents were {instruction:#?}")]
     Execution {
         error: ExecutionError,
-        instruction: Instruction,
+        instruction: Option<Instruction>,
         instruction_index: usize,
     },
 }

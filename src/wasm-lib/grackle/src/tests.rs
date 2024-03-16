@@ -1059,6 +1059,34 @@ fn kcvm_dbg(kcl_program: &str) {
 }
 
 #[tokio::test]
+async fn paul_qr_test() {
+    let program = include_str!("../testdata/paul_qr.kcl");
+    let ast = kcl_lib::parser::Parser::new(kcl_lib::token::lexer(program))
+        .ast()
+        .unwrap();
+    let mut client = Some(test_client().await);
+    crate::execute(ast, &mut client).await.unwrap();
+    use kittycad_modeling_cmds::{each_cmd, ok_response::OkModelingCmdResponse, ImageFormat};
+    let out = client
+        .unwrap()
+        .run_command(
+            uuid::Uuid::new_v4().into(),
+            each_cmd::TakeSnapshot {
+                format: ImageFormat::Png,
+            }
+            .into(),
+        )
+        .await
+        .unwrap();
+    let out = match out {
+        OkModelingCmdResponse::TakeSnapshot(b) => b,
+        other => panic!("wrong output: {other:?}"),
+    };
+    let out: Vec<u8> = out.contents.into();
+    std::fs::write("paul_qr_code.png", out).unwrap();
+}
+
+#[tokio::test]
 async fn stdlib_cube_partial() {
     let program = r#"
     let cube = startSketchAt([10.0, 10.0], "adam")
