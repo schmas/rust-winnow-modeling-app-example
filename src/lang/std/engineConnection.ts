@@ -1201,7 +1201,7 @@ export class EngineCommandManager extends EventTarget {
 
         // When the EngineConnection starts a connection, we want to register
         // callbacks into the WebSocket/PeerConnection.
-        engineConnection.websocket?.addEventListener('message', (event) => {
+        engineConnection.websocket?.addEventListener('message', ((event) => {
           if (event.data instanceof ArrayBuffer) {
             // If the data is an ArrayBuffer, it's  the result of an export command,
             // because in all other cases we send JSON strings. But in the case of
@@ -1230,9 +1230,7 @@ export class EngineCommandManager extends EventTarget {
               this.handleFailedModelingCommand(message.request_id, message)
             }
           }
-        )
-      }) as EventListener
-    )
+      }) as EventListener)
 
     this.engineConnection.addEventListener(EngineConnectionEvents.NewTrack, (({
       detail: { mediaStream },
@@ -1249,7 +1247,9 @@ export class EngineCommandManager extends EventTarget {
     }) as EventListener)
 
     this.engineConnection?.connect()
+  }))
   }
+
   handleResize({
     streamWidth,
     streamHeight,
