@@ -66,6 +66,7 @@ pub trait CoreDump: Clone {
         let webrtc_stats = self.get_webrtc_stats().await?;
         let os = self.os().await?;
         let screenshot_url = self.upload_screenshot().await?;
+        let client_state = self.get_client_state().await?;
 
         let mut app_info = AppInfo {
             version: self.version()?,
@@ -76,6 +77,7 @@ pub trait CoreDump: Clone {
             webrtc_stats,
             github_issue_url: None,
             pool: self.pool()?,
+            client_state,
         };
         app_info.set_github_issue_url(&screenshot_url)?;
 

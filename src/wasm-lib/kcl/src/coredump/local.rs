@@ -55,6 +55,10 @@ impl CoreDump for CoreDumper {
         Ok(crate::coredump::WebrtcStats::default())
     }
 
+    async fn get_client_state(&self) -> Result<crate::coredump::ClientState> {
+        Ok(crate::coredump::ClientState::default())
+    }
+
     async fn screenshot(&self) -> Result<String> {
         // Take a screenshot of the engine.
         todo!()
