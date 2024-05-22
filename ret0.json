@@ -1,0 +1,128 @@
+{
+  "type": "SketchGroup",
+  "type": "SketchGroup",
+  "id": "8586aa5a-2963-4725-9f61-e509fd821ec0",
+  "value": [
+    {
+      "type": "ToPoint",
+      "from": [
+        80.0,
+        100.0
+      ],
+      "to": [
+        80.0,
+        99.99999999999999
+      ],
+      "name": "arc-b",
+      "__geoMeta": {
+        "id": "6e85dd35-e614-4848-8adb-9541efa02e82",
+        "sourceRange": [
+          667,
+          693
+        ]
+      }
+    },
+    {
+      "type": "ToPoint",
+      "from": [
+        80.0,
+        99.99999999999999
+      ],
+      "to": [
+        80.0,
+        100.0
+      ],
+      "name": "",
+      "__geoMeta": {
+        "id": "a6df3a20-8643-4d54-ab26-4e5908f66e08",
+        "sourceRange": [
+          699,
+          707
+        ]
+      }
+    }
+  ],
+  "on": {
+    "type": "face",
+    "id": "f4dd7ea7-d6c5-42a8-9d76-579dbcef0d83",
+    "value": "b",
+    "sketchGroupId": "6b5ff2df-9fd9-41b0-a155-04051be2ab84",
+    "xAxis": {
+      "x": 1.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "yAxis": {
+      "x": 0.0,
+      "y": 1.0,
+      "z": 0.0
+    },
+    "zAxis": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 1.0
+    },
+    "faceId": "3ade06b0-f81f-4e2d-9b94-5b0c648533a9",
+    "__meta": [
+      {
+        "sourceRange": [
+          578,
+          599
+        ]
+      }
+    ]
+  },
+  "start": {
+    "from": [
+      80.0,
+      100.0
+    ],
+    "to": [
+      80.0,
+      100.0
+    ],
+    "name": "",
+    "__geoMeta": {
+      "id": "dd2f4ffb-dfc0-49c8-806b-74959306f440",
+      "sourceRange": [
+        605,
+        661
+      ]
+    }
+  },
+  "position": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "rotation": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "xAxis": {
+    "x": 1.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "yAxis": {
+    "x": 0.0,
+    "y": 1.0,
+    "z": 0.0
+  },
+  "zAxis": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 1.0
+  },
+  "entityId": "f4dd7ea7-d6c5-42a8-9d76-579dbcef0d83",
+  "__meta": [
+    {
+      "sourceRange": [
+        605,
+        661
+      ]
+    }
+  ]
+}

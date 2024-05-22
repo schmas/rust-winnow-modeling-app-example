@@ -108,6 +108,7 @@ pub(crate) async fn do_post_extrude(
     id: Uuid,
     args: Args,
 ) -> Result<Box<ExtrudeGroup>, KclError> {
+    println!("\tExtrude: post");
     // We need to do this after extrude for sketch on face.
     if let SketchSurface::Face(_) = sketch_group.on {
         // Disable the sketch mode.
@@ -133,6 +134,15 @@ pub(crate) async fn do_post_extrude(
     }
 
     let mut edge_id = None;
+    // println!("---");
+    // println!(
+    //     "ADAM: sketch group {} has {} children",
+    //     sketch_group.id,
+    //     sketch_group.value.len()
+    // );
+    // for child in &sketch_group.value {
+    //     println!("\t{} ({})", child.get_id(), child.get_name());
+    // }
     for segment in sketch_group.value.iter() {
         if let Path::ToPoint { base } = segment {
             edge_id = Some(base.geo_meta.id);
@@ -153,6 +163,32 @@ pub(crate) async fn do_post_extrude(
     if let SketchSurface::Face(face) = sketch_group.on {
         sketch_group.id = face.sketch_group_id;
     }
+    let sg_kids = args
+        .send_modeling_cmd(
+            id,
+            kittycad::types::ModelingCmd::EntityGetAllChildUuids {
+                entity_id: sketch_group.id,
+            },
+        )
+        .await?;
+
+    let mut sg_kids = if let kittycad::types::OkWebSocketResponseData::Modeling {
+        modeling_response: kittycad::types::OkModelingCmdResponse::EntityGetAllChildUuids { data },
+    } = sg_kids
+    {
+        data.entity_ids
+    } else {
+        return Err(KclError::Engine(KclErrorDetails {
+            source_ranges: vec![args.source_range],
+            message: "engine returned wrong type".to_owned(),
+        }));
+    };
+    sg_kids.sort();
+    // println!("The actual children of the sketch group are:");
+    // for child in &sg_kids {
+    //     println!("\t{child}");
+    // }
+    // println!("---");
 
     let solid3d_info = args
         .send_modeling_cmd(
@@ -170,8 +206,12 @@ pub(crate) async fn do_post_extrude(
     {
         data.faces
     } else {
-        vec![]
+        return Err(KclError::Engine(KclErrorDetails {
+            source_ranges: vec![args.source_range],
+            message: "engine returned wrong type".to_owned(),
+        }));
     };
+    println!("\t\tExtrude: GetExtrusionFaceInfo: {:?}", face_infos);
 
     // Create a hashmap for quick id lookup
     let mut face_id_map = std::collections::HashMap::new();

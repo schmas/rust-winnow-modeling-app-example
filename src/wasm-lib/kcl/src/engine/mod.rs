@@ -94,6 +94,8 @@ pub trait EngineManager: std::fmt::Debug + Send + Sync + 'static {
 
         // Flush the batch queue.
         self.flush_batch(source_range).await
+        // self.inner_send_modeling_cmd(id, source_range, req, Default::default())
+        //     .await
     }
 
     /// Force flush the batch queue.
@@ -126,6 +128,8 @@ pub trait EngineManager: std::fmt::Debug + Send + Sync + 'static {
             batch_id: uuid::Uuid::new_v4(),
             responses: false,
         };
+        println!("ADAM: Batched requests:");
+        println!("{:#?}", batched_requests);
 
         let final_req = if self.batch().lock().unwrap().len() == 1 {
             // We can unwrap here because we know the batch has only one element.

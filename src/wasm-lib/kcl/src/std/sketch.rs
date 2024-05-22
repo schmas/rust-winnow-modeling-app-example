@@ -1051,6 +1051,7 @@ async fn start_sketch_on_face(
             })
         })?,
     };
+    println!("ADAM: Extrude plane ID: {extrude_plane_id}");
 
     // Enter sketch mode on the face.
     let id = uuid::Uuid::new_v4();

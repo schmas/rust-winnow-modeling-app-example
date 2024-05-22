@@ -110,6 +110,7 @@ async fn inner_fillet(
             }
         };
 
+        println!("ADAM: Fillet API call starting");
         args.send_modeling_cmd(
             uuid::Uuid::new_v4(),
             ModelingCmd::Solid3DFilletEdge {
@@ -121,6 +122,7 @@ async fn inner_fillet(
         )
         .await?;
     }
+    println!("ADAM: Fillet API call done");
 
     Ok(extrude_group)
 }

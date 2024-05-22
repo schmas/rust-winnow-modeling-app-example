@@ -29,6 +29,7 @@ kittycad-execution-plan-macros = { workspace = true }
 kittycad-execution-plan-traits = { workspace = true }
 lazy_static = "1.4.0"
 mime_guess = "2.0.4"
+rand = "0.8.5"
 parse-display = "0.9.0"
 reqwest = { version = "0.11.26", default-features = false, features = ["stream", "rustls-tls"] }
 ropey = "1.6.1"

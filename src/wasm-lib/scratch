@@ -1,0 +1,123 @@
+ADAM: Wrote all memory from return statement as rUdnfjV.json
+	Extrude: post
+---
+ADAM: sketch group a2ecd9a1-c7cc-4db3-bb63-5be5974855cd has 3 children
+	4598a980-b1f3-4bd1-bdf3-66f356bff321 (a)
+	791741d9-4cd8-4f13-bec4-97780e934151 (b)
+	04a888d1-dc0e-403d-9309-dfe59023193f (c)
+The actual children of the sketch group are:
+	04a888d1-dc0e-403d-9309-dfe59023193f
+	0c9a33b2-f704-45f3-8f28-1f79c437eb4b
+	1ebd2369-5888-4593-8e5f-7fa49f286ca0
+	3abe9a2d-2db4-443d-b53a-93519802b387
+	4598a980-b1f3-4bd1-bdf3-66f356bff321
+	50b765e9-2682-4e29-8a1c-8513c1d7a17e
+	5560780a-1fa1-4e32-b95f-91cd457d46e1
+	575bd726-0e1e-47be-a526-b29f7d766a6a
+	78fb3026-5ae5-425e-95b9-37e9aa5b7fd4
+	791741d9-4cd8-4f13-bec4-97780e934151
+	796164d8-7dd1-4d87-9c9d-50c4c4f6ed75
+	850cbb5f-500b-4f38-8653-c068ede2f609
+	8511f1ab-a926-44ff-a2ce-3ab7357ca855
+	a3cbfacc-19dc-4648-86fb-592ad464fa90
+	a5634e28-2059-4bd0-8b3b-6f3bce18f376
+	b3770896-29b6-46f4-9e25-8431077ac055
+	bbd12dcb-b775-4dce-86ad-cb4cf08ea078
+	be7c4237-8d26-4a53-8a2f-c0400c4cb9f2
+	da09cbd3-0007-457e-825a-b53654f441c6
+	fc863feb-ec79-4663-8e3b-d502edbc30c4
+---
+		Extrude: GetExtrusionFaceInfo: [ExtrusionFaceInfo { cap: None, curve_id: Some(4598a980-b1f3-4bd1-bdf3-66f356bff321), face_id: Some(78fb3026-5ae5-425e-95b9-37e9aa5b7fd4) }, ExtrusionFaceInfo { cap: None, curve_id: Some(791741d9-4cd8-4f13-bec4-97780e934151), face_id: Some(a5634e28-2059-4bd0-8b3b-6f3bce18f376) }, ExtrusionFaceInfo { cap: None, curve_id: Some(04a888d1-dc0e-403d-9309-dfe59023193f), face_id: Some(be7c4237-8d26-4a53-8a2f-c0400c4cb9f2) }, ExtrusionFaceInfo { cap: Bottom, curve_id: None, face_id: Some(850cbb5f-500b-4f38-8653-c068ede2f609) }, ExtrusionFaceInfo { cap: Top, curve_id: None, face_id: Some(fc863feb-ec79-4663-8e3b-d502edbc30c4) }]
+ADAM: Defined KCL binding 'p'
+ADAM: Extrude plane ID: 78fb3026-5ae5-425e-95b9-37e9aa5b7fd4
+ADAM: Wrote all memory from return statement as 7oBhzWT.json
+	Extrude: post
+---
+ADAM: sketch group 5b2b0391-6dc7-49db-b325-c92c6c782174 has 2 children
+	6529f575-c236-4143-b7e0-0da02684aef2 (arc-a)
+	73db1d5a-b75c-4ab8-b120-7011bb2abca6 ()
+The actual children of the sketch group are:
+	04a888d1-dc0e-403d-9309-dfe59023193f
+	0c9a33b2-f704-45f3-8f28-1f79c437eb4b
+	10fd7345-bad7-48d9-a0c3-83b057c9a5ab
+	29717780-ee90-4ff6-a3a0-c3201f62e9b7
+	3c46e66c-e339-4231-ad15-cc144f7bad52
+	4598a980-b1f3-4bd1-bdf3-66f356bff321
+	46ea9493-f2b2-4619-bd69-954c372b64f8
+	4d2c8c60-7db5-42f5-9dff-2aade229a09c
+	4fb69f7d-c218-4d8a-a957-e720135d4b2c
+	56746b9a-9edb-4208-9247-08d20dea8d4a
+	6529f575-c236-4143-b7e0-0da02684aef2
+	72fa057a-8ad2-40bc-8522-577eea988cf7
+	78fb3026-5ae5-425e-95b9-37e9aa5b7fd4
+	791741d9-4cd8-4f13-bec4-97780e934151
+	795ce0aa-1cef-42ae-a296-378bbcd0d0c5
+	800b2b77-ed6b-4fb3-9c99-d40b82aa9752
+	8378e037-3b90-4d93-a056-0c5c07723be3
+	850cbb5f-500b-4f38-8653-c068ede2f609
+	a5634e28-2059-4bd0-8b3b-6f3bce18f376
+	b0f8ab71-2006-45eb-b0c1-7623197ef88b
+	bbd12dcb-b775-4dce-86ad-cb4cf08ea078
+	be7c4237-8d26-4a53-8a2f-c0400c4cb9f2
+	da09cbd3-0007-457e-825a-b53654f441c6
+	ed794d93-a245-4424-90dc-cce29512a814
+	f373eaf6-7312-4f09-b0ef-701d8a2585ac
+	fc863feb-ec79-4663-8e3b-d502edbc30c4
+	fe3e2012-a15b-4320-9d24-e069341c316c
+---
+		Extrude: GetExtrusionFaceInfo: [ExtrusionFaceInfo { cap: None, curve_id: Some(6529f575-c236-4143-b7e0-0da02684aef2), face_id: Some(56746b9a-9edb-4208-9247-08d20dea8d4a) }, ExtrusionFaceInfo { cap: Bottom, curve_id: None, face_id: Some(16487843-1bec-49f2-bb9b-e43c86e2269f) }, ExtrusionFaceInfo { cap: Top, curve_id: None, face_id: Some(3c46e66c-e339-4231-ad15-cc144f7bad52) }]
+ADAM: Fillet API call starting
+ADAM: Fillet API call done
+ADAM: Defined KCL binding 'plumbus1'
+ADAM: Extrude plane ID: a5634e28-2059-4bd0-8b3b-6f3bce18f376
+	Extrude: post
+---
+ADAM: sketch group 2eec986e-0f7f-44e6-9ace-b105d2267bdb has 2 children
+	f8529801-371c-43c9-a340-eccf429c2ebb (arc-b)
+	57551761-5f1f-497b-9c55-ca9afc12aa41 ()
+The actual children of the sketch group are:
+	04a888d1-dc0e-403d-9309-dfe59023193f
+	0bb0beeb-e8f8-41a1-81bd-551152a2d91f
+	0c9a33b2-f704-45f3-8f28-1f79c437eb4b
+	10fd7345-bad7-48d9-a0c3-83b057c9a5ab
+	29717780-ee90-4ff6-a3a0-c3201f62e9b7
+	2e8e62b0-85d3-4c4f-ba43-8aab54df3aba
+	3c46e66c-e339-4231-ad15-cc144f7bad52
+	44f1f0f8-1857-428d-a7d3-0c9d84385f9d
+	4598a980-b1f3-4bd1-bdf3-66f356bff321
+	4d2c8c60-7db5-42f5-9dff-2aade229a09c
+	4da24bfa-4384-447f-8644-46bbed0e7d5d
+	56746b9a-9edb-4208-9247-08d20dea8d4a
+	6a7923e3-13a1-4689-aa4d-20ffbabe7b81
+	6eef60b3-7de3-49cb-abaa-e4c0c2623592
+	78fb3026-5ae5-425e-95b9-37e9aa5b7fd4
+	791741d9-4cd8-4f13-bec4-97780e934151
+	795ce0aa-1cef-42ae-a296-378bbcd0d0c5
+	812af572-94c8-4b91-8e87-718f92e4921f
+	8378e037-3b90-4d93-a056-0c5c07723be3
+	84c5093f-1a93-4ea1-be0d-03bd1b071ad9
+	850cbb5f-500b-4f38-8653-c068ede2f609
+	923a9f5f-3b30-49a3-8fd0-92ed8e205de3
+	9ef44341-b2ac-40b6-9232-63c11a2db55d
+	a1aada1a-43db-4efc-95ce-90ac61cb1f33
+	a5634e28-2059-4bd0-8b3b-6f3bce18f376
+	abfa3d1f-a425-4b53-a83a-2f6b61f8e918
+	b0f8ab71-2006-45eb-b0c1-7623197ef88b
+	bbd12dcb-b775-4dce-86ad-cb4cf08ea078
+	be7c4237-8d26-4a53-8a2f-c0400c4cb9f2
+	c7936576-71c7-4d3f-8da3-e4ce0a989fd9
+	da09cbd3-0007-457e-825a-b53654f441c6
+	e1307f2f-a845-44c7-ac40-3a99d9c4b40f
+	e76db8f4-8409-4117-8efb-d582b8e1157b
+	ed794d93-a245-4424-90dc-cce29512a814
+	f7785d2a-0d90-433e-9be9-3895c5826c3f
+	f8529801-371c-43c9-a340-eccf429c2ebb
+	f896452c-f56e-4409-8baf-b852b275d8bd
+	fc863feb-ec79-4663-8e3b-d502edbc30c4
+---
+		Extrude: GetExtrusionFaceInfo: [ExtrusionFaceInfo { cap: None, curve_id: Some(f8529801-371c-43c9-a340-eccf429c2ebb), face_id: Some(a1aada1a-43db-4efc-95ce-90ac61cb1f33) }, ExtrusionFaceInfo { cap: Bottom, curve_id: None, face_id: Some(3f7d3b2e-1cec-4ca0-ad06-68b72c4ae297) }, ExtrusionFaceInfo { cap: Top, curve_id: None, face_id: Some(84c5093f-1a93-4ea1-be0d-03bd1b071ad9) }]
+ADAM: Defined KCL binding 'plumbus0'
+	Defined as [ExtrudePlane(ExtrudePlane { position: Position([0.0, 0.0, 0.0]), rotation: Rotation([0.0, 0.0, 0.0, 1.0]), face_id: a1aada1a-43db-4efc-95ce-90ac61cb1f33, name: "arc-b", geo_meta: GeoMeta { id: f8529801-371c-43c9-a340-eccf429c2ebb, metadata: Metadata { source_range: SourceRange([944, 970]) } } })]
+ADAM: Wrote all memory from end of program as 7XrN3bX.json
+test serial_test_pentagon_fillet_sugar ... ok
+

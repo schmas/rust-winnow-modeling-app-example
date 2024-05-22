@@ -19,10 +19,20 @@ use crate::{
     std::{FunctionKind, StdLib},
 };
 
+/// For use with serde's [serialize_with] attribute
+fn ordered_map<S, K: Ord + Serialize, V: Serialize>(value: &HashMap<K, V>, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    let ordered: std::collections::BTreeMap<_, _> = value.iter().collect();
+    ordered.serialize(serializer)
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, ts_rs::TS, JsonSchema)]
 #[ts(export)]
 #[serde(rename_all = "camelCase")]
 pub struct ProgramMemory {
+    #[serde(serialize_with = "ordered_map")]
     pub root: HashMap<String, MemoryItem>,
     #[serde(rename = "return")]
     pub return_: Option<ProgramReturn>,
@@ -67,6 +77,19 @@ impl ProgramMemory {
 
     /// Add to the program memory.
     pub fn add(&mut self, key: &str, value: MemoryItem, source_range: SourceRange) -> Result<(), KclError> {
+        if key.starts_with("p") {
+            println!("ADAM: Defined KCL binding '{key}'");
+        }
+        if key == "plumbus0" {
+            match value {
+                MemoryItem::ExtrudeGroup(ref e) => {
+                    println!("\tDefined as {:?}", e.value);
+                }
+                _ => {
+                    println!("\tIt's not an ExtrudeGroup");
+                }
+            }
+        }
         if self.root.contains_key(key) {
             return Err(KclError::ValueAlreadyDefined(KclErrorDetails {
                 message: format!("Cannot redefine {}", key),
@@ -967,11 +990,15 @@ impl ExtrudeSurface {
 #[serde(rename_all = "camelCase")]
 pub struct PipeInfo {
     pub previous_results: Option<MemoryItem>,
+    pub log: bool,
 }
 
 impl PipeInfo {
     pub fn new() -> Self {
-        Self { previous_results: None }
+        Self {
+            previous_results: None,
+            log: false,
+        }
     }
 }
 
@@ -1111,8 +1138,11 @@ impl ExecutorContext {
         } else {
             Default::default()
         };
-        self.inner_execute(program, &mut memory, crate::executor::BodyType::Root)
-            .await
+        let mem = self
+            .inner_execute(program, &mut memory, crate::executor::BodyType::Root)
+            .await?;
+        dump_json(&serde_json::to_string_pretty(&mem).unwrap(), "end of program");
+        Ok(mem)
     }
 
     /// Execute an AST's program.
@@ -1123,7 +1153,7 @@ impl ExecutorContext {
         memory: &mut ProgramMemory,
         _body_type: BodyType,
     ) -> Result<ProgramMemory, KclError> {
-        let pipe_info = PipeInfo::default();
+        let mut pipe_info = PipeInfo::default();
 
         // Iterate over the body of the program.
         for statement in &program.body {
@@ -1252,8 +1282,10 @@ impl ExecutorContext {
                                 memory.add(&var_name, result, source_range)?;
                             }
                             Value::PipeExpression(pipe_expression) => {
+                                pipe_info.log = var_name == "plumbus0";
                                 let result = pipe_expression.get_result(memory, &pipe_info, self).await?;
                                 memory.add(&var_name, result, source_range)?;
+                                pipe_info.log = false;
                             }
                             Value::PipeSubstitution(pipe_substitution) => {
                                 return Err(KclError::Semantic(KclErrorDetails {
@@ -1283,48 +1315,52 @@ impl ExecutorContext {
                         }
                     }
                 }
-                BodyItem::ReturnStatement(return_statement) => match &return_statement.argument {
-                    Value::BinaryExpression(bin_expr) => {
-                        let result = bin_expr.get_result(memory, &pipe_info, self).await?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
+                BodyItem::ReturnStatement(return_statement) => {
+                    match &return_statement.argument {
+                        Value::BinaryExpression(bin_expr) => {
+                            let result = bin_expr.get_result(memory, &pipe_info, self).await?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::UnaryExpression(unary_expr) => {
+                            let result = unary_expr.get_result(memory, &pipe_info, self).await?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::Identifier(identifier) => {
+                            let value = memory.get(&identifier.name, identifier.into())?.clone();
+                            memory.return_ = Some(ProgramReturn::Value(value));
+                        }
+                        Value::Literal(literal) => {
+                            memory.return_ = Some(ProgramReturn::Value(literal.into()));
+                        }
+                        Value::ArrayExpression(array_expr) => {
+                            let result = array_expr.execute(memory, &pipe_info, self).await?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::ObjectExpression(obj_expr) => {
+                            let result = obj_expr.execute(memory, &pipe_info, self).await?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::CallExpression(call_expr) => {
+                            let result = call_expr.execute(memory, &pipe_info, self).await?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::MemberExpression(member_expr) => {
+                            let result = member_expr.get_result(memory)?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::PipeExpression(pipe_expr) => {
+                            let result = pipe_expr.get_result(memory, &pipe_info, self).await?;
+                            memory.return_ = Some(ProgramReturn::Value(result));
+                        }
+                        Value::PipeSubstitution(_) => {}
+                        Value::FunctionExpression(_) => {}
+                        Value::None(none) => {
+                            memory.return_ = Some(ProgramReturn::Value(MemoryItem::from(none)));
+                        }
                     }
-                    Value::UnaryExpression(unary_expr) => {
-                        let result = unary_expr.get_result(memory, &pipe_info, self).await?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
-                    }
-                    Value::Identifier(identifier) => {
-                        let value = memory.get(&identifier.name, identifier.into())?.clone();
-                        memory.return_ = Some(ProgramReturn::Value(value));
-                    }
-                    Value::Literal(literal) => {
-                        memory.return_ = Some(ProgramReturn::Value(literal.into()));
-                    }
-                    Value::ArrayExpression(array_expr) => {
-                        let result = array_expr.execute(memory, &pipe_info, self).await?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
-                    }
-                    Value::ObjectExpression(obj_expr) => {
-                        let result = obj_expr.execute(memory, &pipe_info, self).await?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
-                    }
-                    Value::CallExpression(call_expr) => {
-                        let result = call_expr.execute(memory, &pipe_info, self).await?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
-                    }
-                    Value::MemberExpression(member_expr) => {
-                        let result = member_expr.get_result(memory)?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
-                    }
-                    Value::PipeExpression(pipe_expr) => {
-                        let result = pipe_expr.get_result(memory, &pipe_info, self).await?;
-                        memory.return_ = Some(ProgramReturn::Value(result));
-                    }
-                    Value::PipeSubstitution(_) => {}
-                    Value::FunctionExpression(_) => {}
-                    Value::None(none) => {
-                        memory.return_ = Some(ProgramReturn::Value(MemoryItem::from(none)));
-                    }
-                },
+                    let mem_json = serde_json::to_string_pretty(&memory).unwrap();
+                    dump_json(&mem_json, "return statement");
+                }
             }
         }
 
@@ -2050,4 +2086,16 @@ const bracket = startSketchOn('XY')
         let json = serde_json::to_string(&mem).unwrap();
         assert_eq!(json, r#"{"type":"ExtrudeGroups","value":[]}"#);
     }
+}
+
+fn dump_json(j: &str, where_at: &'static str) {
+    use rand::Rng;
+    let id: String = rand::thread_rng()
+        .sample_iter(&rand::distributions::Alphanumeric)
+        .take(7)
+        .map(char::from)
+        .collect();
+    let filepath = format!("{id}.json");
+    std::fs::write(&filepath, j).unwrap();
+    println!("ADAM: Wrote all memory from {where_at} as {filepath}");
 }

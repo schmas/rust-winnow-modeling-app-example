@@ -2793,7 +2793,10 @@ async fn execute_pipe_body(
     // of its own.
     let output = match first {
         Value::BinaryExpression(binary_expression) => binary_expression.get_result(memory, pipe_info, ctx).await?,
-        Value::CallExpression(call_expression) => call_expression.execute(memory, pipe_info, ctx).await?,
+        Value::CallExpression(call_expression) => {
+            let out = call_expression.execute(memory, pipe_info, ctx).await?;
+            out
+        }
         Value::Identifier(identifier) => memory.get(&identifier.name, identifier.into())?.clone(),
         _ => {
             // Return an error this should not happen.
@@ -2806,15 +2809,20 @@ async fn execute_pipe_body(
     // Now that we've evaluated the first child expression in the pipeline, following child expressions
     // should use the previous child expression for %.
     // This means there's no more need for the previous `pipe_info` from the parent AST node above this one.
-    let mut new_pipe_info = PipeInfo::new();
-    new_pipe_info.previous_results = Some(output);
+    let mut new_pipe_info = PipeInfo {
+        previous_results: Some(output),
+        log: false,
+    };
     // Evaluate remaining elements.
     for expression in body {
         let output = match expression {
             Value::BinaryExpression(binary_expression) => {
                 binary_expression.get_result(memory, &new_pipe_info, ctx).await?
             }
-            Value::CallExpression(call_expression) => call_expression.execute(memory, &new_pipe_info, ctx).await?,
+            Value::CallExpression(call_expression) => {
+                let out = call_expression.execute(memory, &new_pipe_info, ctx).await?;
+                out
+            }
             Value::Identifier(identifier) => memory.get(&identifier.name, identifier.into())?.clone(),
             _ => {
                 // Return an error this should not happen.

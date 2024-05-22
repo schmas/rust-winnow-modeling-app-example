@@ -1,0 +1,121 @@
+
+running 1 test
+ADAM: Wrote all memory from return statement as aZKZYPs.json
+	Extrude: post
+---
+ADAM: sketch group 7c0be725-a31b-40b8-8b66-b023d3cb27ab has 3 children
+	ca363eb0-aab1-4b74-b916-b437cd1fea0f (a)
+	845afbc9-5d7a-4558-80c7-8fbb10b49773 (b)
+	3722e3b1-cf4c-43ff-a111-eea55d55d27f (c)
+The actual children of the sketch group are:
+	00db26e9-8dea-4002-9418-af0d6301972e
+	0377700f-ed1d-4639-8c1d-824185c458a5
+	076fec0e-db1c-46b9-9e73-80233ec6aee1
+	1f0f5822-3b44-426f-833b-c32e6a6a3e07
+	2053a7e8-ac12-4d27-bae6-c4e86b863141
+	21477695-bd82-454c-8e5d-7dd7da77360c
+	3722e3b1-cf4c-43ff-a111-eea55d55d27f
+	4907fcb9-3559-4308-b2c8-fe29887078bd
+	5fb01486-114b-406d-bb6f-334371c94029
+	68bbb147-09da-4339-8c95-1a2fd052c943
+	6d2025eb-6737-4d63-a2d5-576be59da344
+	6de9e9bf-a295-4254-89e9-31077218abe6
+	6efd2604-37e0-4c3c-8eb9-1ccfd980bdcc
+	76f1465d-3422-4191-827f-01b6f52f28a3
+	78a1cc3b-106f-484e-9bd3-94e2196f4211
+	845afbc9-5d7a-4558-80c7-8fbb10b49773
+	a7a4bbb7-615d-47bf-b653-26f3c5d13996
+	a7f12a71-a4e3-48ce-ac25-ea4c75e464d0
+	a880285e-be7b-445e-89ee-af5cd947b15c
+	ca363eb0-aab1-4b74-b916-b437cd1fea0f
+---
+		Extrude: GetExtrusionFaceInfo: [ExtrusionFaceInfo { cap: None, curve_id: Some(ca363eb0-aab1-4b74-b916-b437cd1fea0f), face_id: Some(1f0f5822-3b44-426f-833b-c32e6a6a3e07) }, ExtrusionFaceInfo { cap: None, curve_id: Some(845afbc9-5d7a-4558-80c7-8fbb10b49773), face_id: Some(5fb01486-114b-406d-bb6f-334371c94029) }, ExtrusionFaceInfo { cap: None, curve_id: Some(3722e3b1-cf4c-43ff-a111-eea55d55d27f), face_id: Some(00db26e9-8dea-4002-9418-af0d6301972e) }, ExtrusionFaceInfo { cap: Bottom, curve_id: None, face_id: Some(0377700f-ed1d-4639-8c1d-824185c458a5) }, ExtrusionFaceInfo { cap: Top, curve_id: None, face_id: Some(a880285e-be7b-445e-89ee-af5cd947b15c) }]
+ADAM: Defined KCL binding 'p'
+ADAM: Extrude plane ID: 1f0f5822-3b44-426f-833b-c32e6a6a3e07
+ADAM: Wrote all memory from return statement as gU3lRnz.json
+	Extrude: post
+---
+ADAM: sketch group ab116323-912f-43a4-b554-bd678184daf7 has 2 children
+	8d33d671-f62a-48e9-8a7b-3999dd490b8a (arc-a)
+	064a3833-2078-42bd-995b-53ce76eaebbc ()
+The actual children of the sketch group are:
+	00db26e9-8dea-4002-9418-af0d6301972e
+	0377700f-ed1d-4639-8c1d-824185c458a5
+	16e483e8-4ff3-410d-9bd7-69146445d33b
+	1f0f5822-3b44-426f-833b-c32e6a6a3e07
+	3119c97d-9402-465b-8498-63a3c63ddb77
+	3722e3b1-cf4c-43ff-a111-eea55d55d27f
+	44897268-989e-4a8e-bf16-95ebc8cc8bcf
+	4aa88212-2547-454a-b808-c5c4843984fa
+	4b3348c4-7ca3-48ef-a72e-3cb5abb3e96c
+	50308e7f-842b-4f42-92b5-84c021119b29
+	5e1d9d85-264d-4ced-89c3-8fb8814a6770
+	5ea4db78-de30-464f-9a72-88c6df8b3b91
+	5fb01486-114b-406d-bb6f-334371c94029
+	6d2025eb-6737-4d63-a2d5-576be59da344
+	76f1465d-3422-4191-827f-01b6f52f28a3
+	77dece61-a530-41d3-9d0f-b3581a149f31
+	7a2be40f-be2e-4ab7-bd45-cc29464a2ed4
+	845afbc9-5d7a-4558-80c7-8fbb10b49773
+	8d33d671-f62a-48e9-8a7b-3999dd490b8a
+	a7a4bbb7-615d-47bf-b653-26f3c5d13996
+	a880285e-be7b-445e-89ee-af5cd947b15c
+	b58431e9-16e4-4670-8570-5dcfee8b2dc4
+	ca363eb0-aab1-4b74-b916-b437cd1fea0f
+	cb79f8cf-6c71-4d5d-aee0-d4ea8d2a3773
+	cc7dbe63-3209-4172-adea-2936bdbc6001
+	f2561d8c-9812-4cc0-a31a-0897328e0d76
+	f4e07911-0c0c-49da-af1a-144ebdca0baa
+---
+		Extrude: GetExtrusionFaceInfo: [ExtrusionFaceInfo { cap: None, curve_id: Some(8d33d671-f62a-48e9-8a7b-3999dd490b8a), face_id: Some(7a2be40f-be2e-4ab7-bd45-cc29464a2ed4) }, ExtrusionFaceInfo { cap: Bottom, curve_id: None, face_id: Some(363074f6-6288-4b30-a8f9-eb2ec8205421) }, ExtrusionFaceInfo { cap: Top, curve_id: None, face_id: Some(4aa88212-2547-454a-b808-c5c4843984fa) }]
+ADAM: Fillet API call starting
+ADAM: Fillet API call done
+ADAM: Defined KCL binding 'plumbus1'
+ADAM: Extrude plane ID: 5fb01486-114b-406d-bb6f-334371c94029
+ADAM: Wrote all memory from return statement as 27WzMO2.json
+	Extrude: post
+---
+ADAM: sketch group 4bfbedd8-ea4d-4e7f-87b7-3314f0dc53d7 has 2 children
+	3e3e9738-c085-4385-9829-a3f0ccba3728 (arc-b)
+	a450bfc5-4b91-4aeb-a911-b19951188994 ()
+The actual children of the sketch group are:
+	00db26e9-8dea-4002-9418-af0d6301972e
+	0377700f-ed1d-4639-8c1d-824185c458a5
+	0fc417c1-c389-47d9-8a80-7c5c7df6231f
+	1f0f5822-3b44-426f-833b-c32e6a6a3e07
+	23e584a7-db4d-4c03-bfd8-00392c8aa5d4
+	3722e3b1-cf4c-43ff-a111-eea55d55d27f
+	48baed44-58ba-4bb6-98ba-f7cf74c48630
+	4aa88212-2547-454a-b808-c5c4843984fa
+	4b3348c4-7ca3-48ef-a72e-3cb5abb3e96c
+	50308e7f-842b-4f42-92b5-84c021119b29
+	540063e9-1322-472f-aa59-644e882fa119
+	5e1d9d85-264d-4ced-89c3-8fb8814a6770
+	5fb01486-114b-406d-bb6f-334371c94029
+	6d2025eb-6737-4d63-a2d5-576be59da344
+	74d71d4f-86ef-484f-8dfc-d94a61e7c4b3
+	76f1465d-3422-4191-827f-01b6f52f28a3
+	7915460b-4ab3-489e-9295-135d460bc7f9
+	7a2be40f-be2e-4ab7-bd45-cc29464a2ed4
+	845afbc9-5d7a-4558-80c7-8fbb10b49773
+	8d608b9f-9654-4f24-916e-9ad6e8df4521
+	980ef1c6-f714-48cd-a8b0-f90aa0417978
+	a7a4bbb7-615d-47bf-b653-26f3c5d13996
+	a880285e-be7b-445e-89ee-af5cd947b15c
+	aead6db0-6ec2-474b-ae7d-103eeecf2e46
+	b5519f73-1bee-4067-b81b-f75b25aec83a
+	c6770aed-a074-4a82-b6c3-348d650a7ab5
+	ca363eb0-aab1-4b74-b916-b437cd1fea0f
+	cb79f8cf-6c71-4d5d-aee0-d4ea8d2a3773
+	cc7dbe63-3209-4172-adea-2936bdbc6001
+	f2561d8c-9812-4cc0-a31a-0897328e0d76
+	f4e07911-0c0c-49da-af1a-144ebdca0baa
+---
+		Extrude: GetExtrusionFaceInfo: []
+ADAM: Defined KCL binding 'plumbus0'
+	Defined as []
+ADAM: Wrote all memory from end of program as DeP9fPn.json
+test serial_test_pentagon_fillet_sugar ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 94 filtered out; finished in 3.06s
+
